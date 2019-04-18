@@ -10,6 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 fontPath = 'D:/visual stadio/fonts/OpenSans-Bold.ttf'
 
 def preProcess(len_of_txt):
+    #to Do : find the best variable to diffrent len
     variable_dic = {}
     # if len_of_txt == 1:
     #     rstride = 
@@ -120,6 +121,7 @@ def makeImage(text,len_text, width=400, height=200, angle=None):
         width: Image width in pixel.
         height: Image height in pixel.
         angle: The angle between text and X axis.
+        len_text: calculate the best param for that len
     Returns:
         Binary data of CAPTCHA image in PNG format.
     '''
@@ -164,11 +166,10 @@ def randStr(length=7):
 
 
 def readFile():
-
     with open(os.path.join(os.getcwd(),'model.txt'),'r') as f:
         lines= f.readlines()
-        # print(lines)
         return lines
+    
 def fill_line_len(lines):
     line_len = []
     for line in lines:
@@ -185,19 +186,8 @@ def main():
         with open('%d.png' % i, 'wb') as f:
             f.write(img)
         i +=1
-    # while i<=10:
-    #         for line in lines:
-    #             os.mkdir(str(i))
-    #             img = makeImage(str(line), width=512)
-    #             with open('%d/1.png' % i, 'wb') as f:
-    #                 f.write(img)
-    #             i+=1
+
 if __name__ == '__main__':
     
     main()
 
-    # for i in range(20):
-    #     img = makeImage(randStr(), width=512)
-    #     with open('%d.png' % i, 'wb') as f:
-    #         f.write(img)
-    #     print (i)
