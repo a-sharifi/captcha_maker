@@ -1,13 +1,14 @@
-#!/usr/bin/env python 
+#/!usr/bin/env python 
 # encoding=utf-8
 import os
 from random import uniform, shuffle
+# from io import StringIO
 from cStringIO import StringIO
 from PIL import ImageFont, Image, ImageDraw
 import numpy, pylab
 from mpl_toolkits.mplot3d import Axes3D
 
-fontPath = 'D:/visual stadio/fonts/OpenSans-Bold.ttf'
+fontPath = '/home/mrl/catkin_ws/src/moveit_tutorials/_themes/sphinx_rtd_theme/static/fonts/RobotoSlab-Bold.ttf'
 
 def preProcess(len_of_txt):
     #to Do : find the best variable to diffrent len
@@ -111,6 +112,17 @@ def preProcess(len_of_txt):
     #     ylim2 = 
     #     elev = 
     #     azim = 
+    else:
+        rstride = 1
+        cstride = 1
+        zlim1 = -1.3
+        zlim2 = 1.3
+        xlim1 = 1.1
+        xlim2 = 1.9
+        ylim1 = 1.9
+        ylim2 = 1.1
+        elev = 80
+        azim = -90
     variable_dic = {'rstride':rstride,'cstride':cstride,'zlim1':zlim1,'zlim2':zlim2,'xlim1':xlim1,'xlim2':xlim2,'ylim1':ylim1,'ylim2':ylim2,'elev':elev,'azim':azim}
     return variable_dic
     
@@ -183,7 +195,7 @@ def main():
     len_line = fill_line_len(lines)
     for line,len_line in len_line:
         img = makeImage(str(line),len_line,width=512)
-        with open('%d.png' % i, 'wb') as f:
+        with open(os.path.join(os.getcwd(),'captcha/%d.png' % i), 'wb') as f:
             f.write(img)
         i +=1
 

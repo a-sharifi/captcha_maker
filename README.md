@@ -7,3 +7,4 @@ set your font_path in the top of code
 ```
 **Just fill your words in the model.txt and run it**
 `python LTR.py`
+
