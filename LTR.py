@@ -1,40 +1,17 @@
-#/!usr/bin/env python 
+# /!usr/bin/env python
 # encoding=utf-8
 import os
 from random import uniform, shuffle
-# from io import StringIO
 from cStringIO import StringIO
 from PIL import ImageFont, Image, ImageDraw
-import numpy, pylab
+import numpy
+import pylab
 from mpl_toolkits.mplot3d import Axes3D
+from argparse import ArgumentParser
 
-fontPath = '/home/mrl/catkin_ws/src/moveit_tutorials/_themes/sphinx_rtd_theme/static/fonts/RobotoSlab-Bold.ttf'
 
-def preProcess(len_of_txt):
-    #to Do : find the best variable to diffrent len
+def preprocess(len_of_txt):
     variable_dic = {}
-    # if len_of_txt == 1:
-    #     rstride = 
-    #     cstride = 
-    #     zlim1 = 
-    #     zlim2 = 
-    #     xlim1 = 
-    #     xlim2 = 
-    #     ylim1 = 
-    #     ylim2 = 
-    #     elev = 
-    #     azim = 
-    # if len_of_txt == 2:
-    #     rstride = 
-    #     cstride = 
-    #     zlim1 = 
-    #     zlim2 = 
-    #     xlim1 = 
-    #     xlim2 = 
-    #     ylim1 = 
-    #     ylim2 = 
-    #     elev = 
-    #     azim = 
     if len_of_txt == 3:
         rstride = 1
         cstride = 1
@@ -46,17 +23,7 @@ def preProcess(len_of_txt):
         ylim2 = 1.1
         elev = 80
         azim = -90
-    # if len_of_txt == 4:
-    #     rstride = 
-    #     cstride = 
-    #     zlim1 = 
-    #     zlim2 = 
-    #     xlim1 = 
-    #     xlim2 = 
-    #     ylim1 = 
-    #     ylim2 = 
-    #     elev = 
-    #     azim = 
+
     if len_of_txt == 5:
         rstride = 1
         cstride = 1
@@ -68,28 +35,7 @@ def preProcess(len_of_txt):
         ylim2 = 1.1
         elev = 80
         azim = -90
-    # if len_of_txt == 6:
-    #     rstride = 
-    #     cstride = 
-    #     zlim1 = 
-    #     zlim2 = 
-    #     xlim1 = 
-    #     xlim2 = 
-    #     ylim1 = 
-    #     ylim2 = 
-    #     elev = 
-    #     azim = 
-    # if len_of_txt == 7:
-    #     rstride = 
-    #     cstride = 
-    #     zlim1 = 
-    #     zlim2 = 
-    #     xlim1 = 
-    #     xlim2 = 
-    #     ylim1 = 
-    #     ylim2 = 
-    #     elev = 
-    #     azim = 
+
     if len_of_txt == 8:
         rstride = 1
         cstride = 2
@@ -101,17 +47,7 @@ def preProcess(len_of_txt):
         ylim2 = 1.1
         elev = 80
         azim = -90
-    # if len_of_txt == 9:
-    #     rstride = 
-    #     cstride = 
-    #     zlim1 = 
-    #     zlim2 = 
-    #     xlim1 = 
-    #     xlim2 = 
-    #     ylim1 = 
-    #     ylim2 = 
-    #     elev = 
-    #     azim = 
+
     else:
         rstride = 1
         cstride = 1
@@ -123,10 +59,12 @@ def preProcess(len_of_txt):
         ylim2 = 1.1
         elev = 80
         azim = -90
-    variable_dic = {'rstride':rstride,'cstride':cstride,'zlim1':zlim1,'zlim2':zlim2,'xlim1':xlim1,'xlim2':xlim2,'ylim1':ylim1,'ylim2':ylim2,'elev':elev,'azim':azim}
+    variable_dic = {'rstride': rstride, 'cstride': cstride, 'zlim1': zlim1, 'zlim2': zlim2,
+                    'xlim1': xlim1, 'xlim2': xlim2, 'ylim1': ylim1, 'ylim2': ylim2, 'elev': elev, 'azim': azim}
     return variable_dic
-    
-def makeImage(text,len_text, width=400, height=200, angle=None):
+
+
+def make_image(text, font_path, len_text, width=400, height=200, angle=None):
     '''Generate a 3d CAPTCHA image.
     Args:
         text: Text in the image.
@@ -137,13 +75,13 @@ def makeImage(text,len_text, width=400, height=200, angle=None):
     Returns:
         Binary data of CAPTCHA image in PNG format.
     '''
-    variables = preProcess(len_text)
+    variables = preprocess(len_text)
     angle = angle if angle != None else uniform(-20, 20)
     try:
-        font = ImageFont.truetype(fontPath, 24)
+        font = ImageFont.truetype(font_path, 24)
     except IOError:
         raise IOError(
-            'Font file doesn\'t exist. Please set `fontPath` correctly.')
+            'Font file doesn\'t exist. Please set `font_path` correctly.')
     txtW, txtH = font.getsize(text)
     img = Image.new('L', (txtW * 3, txtH * 3), 255)
     drw = ImageDraw.Draw(img)
@@ -153,7 +91,8 @@ def makeImage(text,len_text, width=400, height=200, angle=None):
     ax = Axes3D(fig)
     X, Y = numpy.meshgrid(range(img.size[0]), range(img.size[1]))
     Z = 1 - numpy.asarray(img) / 255
-    ax.plot_wireframe(X, -Y, Z, rstride=variables['rstride'], cstride=variables['cstride'])
+    ax.plot_wireframe(
+        X, -Y, Z, rstride=variables['rstride'], cstride=variables['cstride'])
     ax.set_zlim((variables['zlim1'], variables['zlim2']))
     ax.set_xlim((txtW * variables['xlim1'], txtW * variables['xlim2']))
     ax.set_ylim((-txtH * variables['ylim1'], -txtH * variables['ylim2']))
@@ -166,6 +105,7 @@ def makeImage(text,len_text, width=400, height=200, angle=None):
     fim.close()
     return binData
 
+
 def randStr(length=7):
     '''Generate a random string composed of lowercase and digital.
     Indistinguishable characters have been removed.
@@ -175,31 +115,40 @@ def randStr(length=7):
     return str(characters[:length])
 
 
-
-
-def readFile():
-    with open(os.path.join(os.getcwd(),'model.txt'),'r') as f:
-        lines= f.readlines()
+def read_line(model_path):
+    with open(model_path, 'r') as f:
+        lines = f.readlines()
         return lines
-    
+
+
 def fill_line_len(lines):
     line_len = []
     for line in lines:
         line_space = ' '.join(line)
-        line_len.append([line_space,len(line)-1])
+        line_len.append([line_space, len(line)-1])
     return line_len
 
+
 def main():
+    if not os.path.exists:
+        os.makedirs(os.path.join(os.path.dirname(__file__), 'captcha'))
+    ap = ArgumentParser()
+    ap.add_argument("-f", "--font_path", required=True, type=str,
+                    help='the path of font that you want to use')
+    ap.add_argument("-p", "--sample_path", required=True,
+                    type=str, help="the path of sample.txt")
+    args = vars(ap.parse_args())
+    font = args['font_path']
+    sample = args['sample_path']
     i = 1
-    lines = readFile()
+    lines = read_line(sample)
     len_line = fill_line_len(lines)
-    for line,len_line in len_line:
-        img = makeImage(str(line),len_line,width=512)
-        with open(os.path.join(os.getcwd(),'captcha/%d.png' % i), 'wb') as f:
+    for line, len_line in len_line:
+        img = make_image(str(line), font, len_line, width=512)
+        with open(os.path.join(os.path.dirname(__file__), 'captcha', '{}.png'.format(i)), 'wb') as f:
             f.write(img)
-        i +=1
+        i += 1
+
 
 if __name__ == '__main__':
-    
     main()
-
